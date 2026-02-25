@@ -1,0 +1,100 @@
+# ---- System ----
+# Windows thumbnail cache
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# ---- IDEs / Editors ----
+.idea/
+*.iml
+.vscode/
+*.code-workspace
+
+# ---- Python ----
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# Tools
+.pytest_cache/
+.mypy_cache/
+*.pyc
+.python-version
+
+# Jupyter
+.ipynb_checkpoints
+
+# ---- Kotlin / Gradle / Android ----
+# Gradle
+/.gradle/
+**/build/
+build/
+
+# Local configuration file (sdk path, etc.)
+local.properties
+
+# Android
+*.apk
+*.ap_
+*.dex
+*.class
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Kotlin/Native
+*.klib
+*.kexe
+.konan/
+.cinterop/
+
+# Gradle wrapper caches
+/.gradle/
+
+# ---- Node / JS ----
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ---- Data / Notebooks / Outputs ----
+# Raw datasets and large data files (adjust if you want to track them)
+**/data/raw/*
+
+# Notebook checkpoints and outputs
+.ipynb_checkpoints
+
+# ---- Misc ----
+# Logs
+*.log
+
+# Coverage
+coverage/
+htmlcov/
+
+# OS generated files
+Thumbs.db
+.DS_Store
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+

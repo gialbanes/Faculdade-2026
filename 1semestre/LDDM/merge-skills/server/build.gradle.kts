@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.ktor)
+    alias(libs.plugins.kotlinSerialization)
     application
 }
 
@@ -20,4 +21,20 @@ dependencies {
     implementation(libs.ktor.serverNetty)
     testImplementation(libs.ktor.serverTestHost)
     testImplementation(libs.kotlin.testJunit)
+    // Serialização JSON para respostas da API
+    implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
+
+// ORM Jetbrains Exposed
+    implementation(libs.exposed.core)
+    implementation(libs.exposed.dao)
+    implementation(libs.exposed.jdbc)
+    implementation(libs.exposed.json)
+
+// Controle de esquemas - Flyway
+    implementation(libs.flyway.core)
+    implementation(libs.flyway.database.postgresql)
+
+// Interação oficial JDBC
+    implementation(libs.postgresql)
 }

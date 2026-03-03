@@ -8,10 +8,9 @@ class Perceptron:
         # Normalização: (-60dB a 0dB) -> (aprox 0.0 a 1.0)
         loudness_norm = (loudness + 10) / 10
 
-        # Cálculo Z
-        w_energy = self.weights.get('energy', 0.0)
-        w_loudness = self.weights.get('loudness', 0.0)
-        linear_output = (energy * w_energy) + (loudness_norm * w_loudness) + self.bias
+        w_energy = self.weights.get('energy', 0.0) # Pegando o peso para energia, ou 0.0 se não existir
+        w_loudness = self.weights.get('loudness', 0.0) # Pegando o peso para loudness, ou 0.0 se não existir
+        linear_output = (energy * w_energy) + (loudness_norm * w_loudness) + self.bias # Cálculo linear (Z) com os pesos e bias
 
         # Ativação (Degrau)
         prediction = 1 if linear_output >= 0.5 else 0

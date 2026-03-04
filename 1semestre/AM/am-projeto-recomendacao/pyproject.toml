@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "fastapi[standard]>=0.133.0",
+    "functions>=0.7.0",
     "matplotlib>=3.10.8",
     "pandas>=3.0.1",
     "pydantic>=2.12.5",

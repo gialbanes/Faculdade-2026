@@ -1,6 +1,5 @@
-def main():
-    print("Hello from am-projeto-recomendacao!")
+from fastapi import FastAPI
+from src.api.v1.router import api_router
 
-
-if __name__ == "__main__":
-    main()
+app = FastAPI(title="API de Recomendação")
+app.include_router(api_router, prefix="/api/v1")

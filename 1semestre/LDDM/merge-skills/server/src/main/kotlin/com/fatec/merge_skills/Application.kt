@@ -9,6 +9,10 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.swagger.swaggerUI
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import com.fatec.merge_skills.routes.courseRoutes
+import com.fatec.merge_skills.routes.lessonRoutes
+import com.fatec.merge_skills.routes.questionRoutes
+import com.fatec.merge_skills.routes.progressRoutes
 
 fun main() {
     embeddedServer(Netty, port = SERVER_PORT, host = "0.0.0.0", module = Application::module)
@@ -27,5 +31,11 @@ fun Application.module() {
         get("/health") { call.respondText("OK") }
 
         swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml")
+
+        //  Semana 03: Rotas da API
+        courseRoutes(courseRepository, lessonRepository)
+        lessonRoutes(questionRepository)
+        questionRoutes(questionRepository)
+        progressRoutes(questionRepository)
     }
 }

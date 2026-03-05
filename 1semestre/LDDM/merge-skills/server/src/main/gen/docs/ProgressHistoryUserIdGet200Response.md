@@ -1,0 +1,13 @@
+
+
+# ProgressHistoryUserIdGet200Response
+
+
+## Properties
+
+| Name | Type | Description | Notes |
+|------------ | ------------- | ------------- | -------------|
+|**completedLessons** | **List&lt;Integer&gt;** |  |  [optional] |
+
+
+

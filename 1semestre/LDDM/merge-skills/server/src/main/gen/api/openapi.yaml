@@ -1,0 +1,354 @@
+openapi: 3.0.3
+info:
+  description: API do Sistema de Gestão de Aprendizagem para o Curso de Desenvolvimento
+    Mobile
+  title: API LDDM - MergeSkills
+  version: 1.0.0
+servers:
+- description: Servidor de Desenvolvimento Local
+  url: http://localhost:8080
+tags:
+- description: Gerenciamento de cursos e catálogos
+  name: Cursos
+- description: Lições e questões
+  name: Conteúdo
+- description: Acompanhamento do estudante
+  name: Progresso
+paths:
+  /courses:
+    get:
+      description: Retorna uma lista com todos os cursos disponíveis.
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Course'
+                type: array
+          description: Operação realizada com sucesso
+      summary: Listar todos os cursos
+      tags:
+      - Cursos
+      x-accepts:
+      - application/json
+  /courses/{id}/lessons:
+    get:
+      description: Retorna todas as lições associadas a um ID de curso específico.
+      parameters:
+      - description: ID do Curso
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Lesson'
+                type: array
+          description: Operação realizada com sucesso
+        "400":
+          description: ID inválido fornecido
+      summary: Listar lições de um curso
+      tags:
+      - Conteúdo
+      x-accepts:
+      - application/json
+  /lessons/{id}/questions:
+    get:
+      description: Retorna todas as questões associadas a um ID de lição específico.
+      parameters:
+      - description: ID da Lição
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/Question'
+                type: array
+          description: Operação realizada com sucesso
+        "400":
+          description: ID inválido fornecido
+      summary: Listar questões de uma lição
+      tags:
+      - Conteúdo
+      x-accepts:
+      - application/json
+  /questions/{id}:
+    get:
+      description: Retorna os detalhes de uma questão específica.
+      parameters:
+      - description: ID da Questão
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+          description: Operação realizada com sucesso
+        "404":
+          description: Questão não encontrada
+        "400":
+          description: ID inválido fornecido
+      summary: Obter detalhes de uma questão
+      tags:
+      - Conteúdo
+      x-accepts:
+      - application/json
+  /progress/submit:
+    post:
+      description: Envia uma resposta para uma questão e registra o progresso.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitAnswerRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmitAnswerResponse'
+          description: Resposta enviada com sucesso
+        "404":
+          description: Questão não encontrada
+      summary: Enviar resposta
+      tags:
+      - Progresso
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /progress/reset:
+    post:
+      description: Reinicia o progresso de uma lição específica para um usuário.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetProgressRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_progress_reset_post_200_response'
+          description: Progresso reiniciado com sucesso
+      summary: Reiniciar progresso
+      tags:
+      - Progresso
+      x-content-type: application/json
+      x-accepts:
+      - application/json
+  /progress/history/{userId}:
+    get:
+      description: Retorna uma lista de IDs de lições completadas por um usuário.
+      parameters:
+      - description: ID do Usuário
+        explode: false
+        in: path
+        name: userId
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/_progress_history__userId__get_200_response'
+          description: Operação realizada com sucesso
+        "400":
+          description: ID de usuário inválido fornecido
+      summary: Obter histórico do usuário
+      tags:
+      - Progresso
+      x-accepts:
+      - application/json
+components:
+  schemas:
+    Course:
+      example:
+        color: color
+        icon: icon
+        description: description
+        id: 0
+        title: title
+        total_lessons: 6
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        icon:
+          type: string
+        color:
+          type: string
+        total_lessons:
+          type: integer
+      title: Curso
+      type: object
+    Lesson:
+      example:
+        course_id: 6
+        questions:
+        - code: code
+          question: question
+          options:
+          - options
+          - options
+          correct_answer: 2
+          id: 5
+          lesson_id: 5
+          order: 7
+        - code: code
+          question: question
+          options:
+          - options
+          - options
+          correct_answer: 2
+          id: 5
+          lesson_id: 5
+          order: 7
+        description: description
+        id: 0
+        title: title
+        order: 1
+      properties:
+        id:
+          type: integer
+        course_id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        order:
+          type: integer
+        questions:
+          items:
+            $ref: '#/components/schemas/Question'
+          type: array
+      title: Lição
+      type: object
+    Question:
+      example:
+        code: code
+        question: question
+        options:
+        - options
+        - options
+        correct_answer: 2
+        id: 5
+        lesson_id: 5
+        order: 7
+      properties:
+        id:
+          type: integer
+        lesson_id:
+          type: integer
+        question:
+          type: string
+        code:
+          type: string
+        options:
+          items:
+            type: string
+          type: array
+        correct_answer:
+          type: integer
+        order:
+          type: integer
+      title: Questão
+      type: object
+    SubmitAnswerRequest:
+      example:
+        questionId: 6
+        userId: 0
+        selectedOption: 1
+      properties:
+        userId:
+          type: integer
+        questionId:
+          type: integer
+        selectedOption:
+          type: integer
+      required:
+      - questionId
+      - selectedOption
+      - userId
+      title: Requisição de Envio de Resposta
+      type: object
+    SubmitAnswerResponse:
+      example:
+        correctAnswer: 0
+        message: message
+        isCorrect: true
+      properties:
+        isCorrect:
+          type: boolean
+        correctAnswer:
+          type: integer
+        message:
+          type: string
+      title: Resposta do Envio
+      type: object
+    ResetProgressRequest:
+      example:
+        lessonId: 6
+        userId: 0
+      properties:
+        userId:
+          type: integer
+        lessonId:
+          type: integer
+      required:
+      - lessonId
+      - userId
+      title: Requisição de Reset de Progresso
+      type: object
+    _progress_reset_post_200_response:
+      example:
+        message: Progresso resetado com sucesso
+      properties:
+        message:
+          example: Progresso resetado com sucesso
+          type: string
+      type: object
+    _progress_history__userId__get_200_response:
+      example:
+        completedLessons:
+        - 0
+        - 0
+      properties:
+        completedLessons:
+          items:
+            type: integer
+          type: array
+      type: object
+

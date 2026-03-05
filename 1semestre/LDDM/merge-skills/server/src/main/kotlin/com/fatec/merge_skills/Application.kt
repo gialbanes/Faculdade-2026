@@ -6,6 +6,7 @@ import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.swagger.swaggerUI
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
@@ -24,5 +25,7 @@ fun Application.module() {
     routing {
         get("/") { call.respondText("Serviço Ktor ativo.") }
         get("/health") { call.respondText("OK") }
+
+        swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml")
     }
 }

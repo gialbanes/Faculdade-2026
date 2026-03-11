@@ -4,29 +4,20 @@ class Perceptron:
         self.weights = weights if weights is not None else default_weights
         self.bias = bias
 
-    def _normalizar_loudness(self, loudness):
-        """Normaliza loudness de dB (-60..0) para escala comparável."""
-        return (loudness + 10) / 10
-
     def predict(self, energy, loudness):
-        """
-        Antes:  z = (energy * w1) + (loudness_norm * w2) + bias
-        """
+        # Normalização: (-60dB a 0dB) -> (aprox 0.0 a 1.0)
+        loudness_norm = (loudness + 10) / 10
 
-        z = np.dot(X, W) + bias
+        # Cálculo Z
+        w_energy = self.weights.get('energy', 0.0)
+        w_loudness = self.weights.get('loudness', 0.0)
+        linear_output = (energy * w_energy) + (loudness_norm * w_loudness) + self.bias
 
-        loudness_norm = self._normalizar_loudness(loudness)
-
-        # Monta o vetor de entradas
-        X = np.array([energy, loudness_norm])
-
-        # Produto escalar: substitui a soma manual
-        z = np.dot(X, self.weights) + self.bias
-
-        prediction = 1 if z >= 0.5 else 0
+        # Ativação (Degrau)
+        prediction = 1 if linear_output >= 0.5 else 0
 
         return {
             "prediction": prediction,
-            "activation": float(z),
-            "normalized_loudness": float(loudness_norm),
+            "activation": linear_output,
+            "normalized_loudness": loudness_norm
         }

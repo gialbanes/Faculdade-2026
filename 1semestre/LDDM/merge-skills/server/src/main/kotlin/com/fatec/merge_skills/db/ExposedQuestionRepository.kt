@@ -1,13 +1,11 @@
 package com.fatec.merge_skills.db
 
-import com.fatec.lddm_merge_skills.model.Question
-import com.fatec.lddm_merge_skills.repository.QuestionRepository
+import com.fatec.merge_skills.repository.QuestionRepository
+import com.fatec.merge_skills.model.Question
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import com.fatec.merge_skills.db.Questions
-
 
 class ExposedQuestionRepository : QuestionRepository {
 
@@ -16,7 +14,7 @@ class ExposedQuestionRepository : QuestionRepository {
     private fun ResultRow.toQuestion(): Question {
         val optionsJson = this[Questions.options]
         val optionsList: List<String> = try {
-            Json.decodeFromString(optionsJson)
+            Json.Default.decodeFromString(optionsJson)
         } catch (e: Exception) {
             emptyList()
         }

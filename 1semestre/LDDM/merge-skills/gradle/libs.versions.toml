@@ -21,6 +21,7 @@ kotlinx-serialization = "1.8.1"
 exposed = "0.60.0"
 flyway = "11.5.0"
 postgresql = "42.7.5"
+supabaseKt = "3.0.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -63,6 +64,11 @@ exposed-json = { module = "org.jetbrains.exposed:exposed-json", version.ref = "e
 flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
 flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+
+# Semana 04
+ktor-client-cio-jvm = { module = "io.ktor:ktor-client-cio-jvm", version.ref = "ktor" }
+supabase-postgrest-kt = { module = "io.github.jan-tennert.supabase:postgrest-kt", version.ref = "supabaseKt" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

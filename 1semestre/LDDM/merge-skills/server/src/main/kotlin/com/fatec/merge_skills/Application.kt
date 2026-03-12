@@ -13,6 +13,9 @@ import com.fatec.merge_skills.routes.courseRoutes
 import com.fatec.merge_skills.routes.lessonRoutes
 import com.fatec.merge_skills.routes.questionRoutes
 import com.fatec.merge_skills.routes.progressRoutes
+import com.fatec.lddm_merge_skills.db.ExposedCourseRepository
+import com.fatec.merge_skills.db.ExposedLessonRepository
+import com.fatec.merge_skills.db.ExposedQuestionRepository
 
 fun main() {
     embeddedServer(Netty, port = SERVER_PORT, host = "0.0.0.0", module = Application::module)
@@ -25,6 +28,9 @@ fun Application.module() {
     }
 
     DatabaseFactory.init() // Delegação do banco inserida na inicialização do Ktor
+    val courseRepository = ExposedCourseRepository()
+    val lessonRepository = ExposedLessonRepository()
+    val questionRepository = ExposedQuestionRepository()
 
     routing {
         get("/") { call.respondText("Serviço Ktor ativo.") }

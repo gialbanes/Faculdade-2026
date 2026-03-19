@@ -1,11 +1,10 @@
-package com.fatec.lddm_merge_skills.db
+package com.fatec.merge_skills.db
 
 import com.fatec.merge_skills.model.Lesson
 import com.fatec.merge_skills.repository.LessonRepository
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import com.fatec.merge_skills.db.Lessons
 
 class ExposedLessonRepository : LessonRepository {
 

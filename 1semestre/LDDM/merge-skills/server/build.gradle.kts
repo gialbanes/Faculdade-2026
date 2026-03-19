@@ -41,4 +41,9 @@ dependencies {
     // Swagger UI
     implementation(libs.ktor.server.swagger)
     implementation(libs.ktor.server.status.pages)
+
+    // === Semana 04: Supabase Client para Kotlin ===
+    implementation(libs.supabase.postgrest.kt)
+    implementation(libs.ktor.client.cio.jvm)
+    implementation(libs.dotenv)
 }

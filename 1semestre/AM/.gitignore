@@ -44,10 +44,6 @@ env/
 .python-version
 uv.lock
 
-# Jupyter Notebooks
-.ipynb_checkpoints/
-*.ipynb
-
 # Data Files (Large datasets)
 *.csv
 *.parquet

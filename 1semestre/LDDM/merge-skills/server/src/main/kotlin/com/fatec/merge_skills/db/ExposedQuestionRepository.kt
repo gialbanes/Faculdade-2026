@@ -1,46 +1,30 @@
 package com.fatec.merge_skills.db
 
-import com.fatec.merge_skills.repository.QuestionRepository
+import com.fatec.merge_skills.db.dto.*
 import com.fatec.merge_skills.model.Question
-import kotlinx.serialization.json.Json
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.selectAll
+import com.fatec.merge_skills.repository.QuestionRepository
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
 class ExposedQuestionRepository : QuestionRepository {
-
-    // Converte ResultRow para Question
-    // ATENÇÃO: o campo options precisa de conversão JSON → List<String>
-    private fun ResultRow.toQuestion(): Question {
-        val optionsJson = this[Questions.options]
-        val optionsList: List<String> = try {
-            Json.Default.decodeFromString(optionsJson)
-        } catch (e: Exception) {
-            emptyList()
-        }
-
-        return Question(
-            id = this[Questions.id].value,
-            lessonId = this[Questions.lessonId].value,
-            question = this[Questions.question],
-            code = this[Questions.code],
-            options = optionsList,
-            correctAnswer = this[Questions.correctAnswer],
-            order = this[Questions.order]
-        )
-    }
-
     override suspend fun getByLessonId(lessonId: Int): List<Question> = newSuspendedTransaction {
-        Questions.selectAll()
-            .where { Questions.lessonId eq lessonId }
-            .orderBy(Questions.order)
-            .map { it.toQuestion() }
+        Questions.selectAll().where { Questions.lessonId eq lessonId }.orderBy(Questions.order).map { it.toQuestion() }
     }
-
     override suspend fun getById(id: Int): Question? = newSuspendedTransaction {
-        Questions.selectAll()
-            .where { Questions.id eq id }
-            .map { it.toQuestion() }
-            .singleOrNull()
+        Questions.selectAll().where { Questions.id eq id }.map { it.toQuestion() }.singleOrNull()
+    }
+    override suspend fun create(question: Question): Question = newSuspendedTransaction {
+        val insertStatement = Questions.insert { question.toInsertDTO().applyTo(it) }
+        insertStatement.resultedValues!!.first().toQuestion()
+    }
+    override suspend fun update(id: Int, question: Question): Question = newSuspendedTransaction {
+        Questions.update({ Questions.id eq id }) { question.toInsertDTO().applyTo(it) }
+        getById(id) ?: question
+    }
+    override suspend fun delete(id: Int) {
+        newSuspendedTransaction {
+            Questions.deleteWhere { Questions.id eq id }
+        }
     }
 }

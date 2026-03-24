@@ -2,6 +2,8 @@ package com.fatec.merge_skills.db
 
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.ReferenceOption
+import kotlinx.serialization.json.Json
+import org.jetbrains.exposed.sql.json.jsonb
 
 object Courses : IntIdTable("courses") {
     val title = text("title")
@@ -22,7 +24,7 @@ object Questions : IntIdTable("questions") {
     val lessonId = reference("lesson_id", Lessons, onDelete = ReferenceOption.CASCADE)
     val question = text("question")
     val code = text("code").nullable()
-    val options = text("options").default("[]")
+    val options = jsonb<List<String>>("options", Json.Default).default(emptyList())
     val correctAnswer = integer("correct_answer").nullable()
     val order = integer("order").nullable()
 }

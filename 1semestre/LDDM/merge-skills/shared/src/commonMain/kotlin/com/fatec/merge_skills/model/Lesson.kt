@@ -5,11 +5,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Lesson(
-    val id: Int,
-    @SerialName("course_id")
-    val courseId: Int,           // Chave Estrangeira
+    val id: Int = 0,
+    @SerialName("course_id") val courseId: Int,
     val title: String,
     val description: String? = null,
-    val order: Int? = null,
-    val questions: List<Question>? = null
+    val order: Int? = null
 )

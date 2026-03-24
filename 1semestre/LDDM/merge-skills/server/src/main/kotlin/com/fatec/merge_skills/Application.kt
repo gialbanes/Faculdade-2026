@@ -1,7 +1,7 @@
 package com.fatec.merge_skills
 
 import com.fatec.merge_skills.db.DatabaseFactory
-import com.fatec.lddm_merge_skills.db.ExposedCourseRepository
+import com.fatec.merge_skills.db.ExposedCourseRepository
 import com.fatec.merge_skills.db.ExposedLessonRepository
 import com.fatec.merge_skills.db.ExposedQuestionRepository
 import com.fatec.merge_skills.routes.courseRoutes
@@ -18,8 +18,6 @@ import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.plugins.swagger.swaggerUI
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import com.fatec.merge_skills.SERVER_PORT
-import com.fatec.merge_skills.Greeting
 import io.github.cdimascio.dotenv.dotenv
 
 fun main() {
@@ -68,7 +66,7 @@ fun Application.module() {
 
         // Passando os repositórios para as rotas
         courseRoutes(courseRepository, lessonRepository)
-        lessonRoutes(questionRepository)
+        lessonRoutes(lessonRepository, questionRepository)
         questionRoutes(questionRepository)
         progressRoutes(questionRepository)
     }

@@ -1,47 +1,57 @@
 package com.fatec.merge_skills
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import org.jetbrains.compose.resources.painterResource
-
-import merge_skills.composeapp.generated.resources.Res
-import merge_skills.composeapp.generated.resources.compose_multiplatform
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.fatec.merge_skills.model.Course
+import com.fatec.merge_skills.network.ApiClient
 
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
+        // Estados reativos
+        var courses by remember { mutableStateOf<List<Course>>(emptyList()) }
+        var loading by remember { mutableStateOf(true) }
+        var error by remember { mutableStateOf<String?>(null) }
+
+        // Busca os cursos UMA vez ao montar a tela
+        LaunchedEffect(Unit) {
+            try {
+                courses = ApiClient.getCourses()
+            } catch (e: Exception) {
+                error = e.message
             }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+            loading = false
+        }
+
+        // Renderiza baseado no estado
+        when {
+            loading -> {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            }
+            error != null -> {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("Erro: $error", fontSize = 16.sp)
+                }
+            }
+            else -> {
+                LazyColumn(
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
+                    items(courses) { course ->
+                        Text("• ${course.title}", fontSize = 16.sp)
+                    }
                 }
             }
         }

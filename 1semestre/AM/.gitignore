@@ -44,14 +44,6 @@ env/
 .python-version
 uv.lock
 
-# Data Files (Large datasets)
-*.csv
-*.parquet
-*.xlsx
-*.xls
-data/raw/
-data/processed/
-
 # Logs
 *.log
 logs/

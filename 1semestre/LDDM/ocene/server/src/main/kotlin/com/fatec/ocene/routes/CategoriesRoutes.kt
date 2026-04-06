@@ -6,9 +6,6 @@ import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.contentOrNull
-import kotlinx.serialization.json.jsonPrimitive
 
 fun Route.categoryRoutes(repository: CategoryRepository) {
 
@@ -19,7 +16,10 @@ fun Route.categoryRoutes(repository: CategoryRepository) {
 
     get("/categories/{id}") {
         val id = call.parameters["id"]?.toIntOrNull()
-            ?: return@get call.respond(HttpStatusCode.BadRequest, mapOf("error" to "ID inválido"))
+        if (id == null) {
+            call.respond(HttpStatusCode.BadRequest, mapOf("error" to "ID inválido"))
+            return@get
+        }
 
         val category = repository.getById(id)
             ?: return@get call.respond(HttpStatusCode.NotFound, mapOf("error" to "Categoria não encontrada"))
@@ -41,29 +41,14 @@ fun Route.categoryRoutes(repository: CategoryRepository) {
         val id = call.parameters["id"]?.toIntOrNull()
             ?: return@put call.respond(HttpStatusCode.BadRequest, "ID ausente")
 
-        val currentCategory = repository.getById(id)
-            ?: return@put call.respond(HttpStatusCode.NotFound, mapOf("error" to "Categoria não encontrada"))
+        val categoryRequest = call.receive<Category>()
 
-        val body = try {
-            call.receive<JsonObject>()
+        try {
+            val updatedCategory = repository.update(id, categoryRequest)
+            call.respond(HttpStatusCode.OK, updatedCategory)
         } catch (e: Exception) {
-            return@put call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Formato de categoria inválido"))
+            call.respond(HttpStatusCode.NotFound, mapOf("error" to "Categoria não encontrada"))
         }
-
-        val newName = body["name"]?.jsonPrimitive?.contentOrNull ?: currentCategory.name
-        val newDescription = if (body.containsKey("description")) {
-            body["description"]?.jsonPrimitive?.contentOrNull
-        } else {
-            currentCategory.description
-        }
-
-        val updatedCategory = currentCategory.copy(
-            name = newName,
-            description = newDescription,
-        )
-
-        val savedCategory = repository.update(id, updatedCategory)
-        call.respond(HttpStatusCode.OK, savedCategory)
     }
 
     delete("/categories/{id}") {

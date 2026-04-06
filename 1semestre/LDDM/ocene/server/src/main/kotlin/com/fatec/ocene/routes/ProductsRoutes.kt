@@ -6,11 +6,6 @@ import io.ktor.http.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.contentOrNull
-import kotlinx.serialization.json.doubleOrNull
-import kotlinx.serialization.json.intOrNull
-import kotlinx.serialization.json.jsonPrimitive
 
 fun Route.productRoutes(repository: ProductRepository) {
 
@@ -51,53 +46,14 @@ fun Route.productRoutes(repository: ProductRepository) {
         val id = call.parameters["id"]?.toIntOrNull()
             ?: return@put call.respond(HttpStatusCode.BadRequest, "ID ausente")
 
-        val currentProduct = repository.getById(id)
-            ?: return@put call.respond(HttpStatusCode.NotFound, mapOf("error" to "Produto não encontrado"))
+        val productRequest = call.receive<Product>()
 
-        val body = try {
-            call.receive<JsonObject>()
+        try {
+            val updatedProduct = repository.update(id, productRequest)
+            call.respond(HttpStatusCode.OK, updatedProduct)
         } catch (e: Exception) {
-            return@put call.respond(HttpStatusCode.BadRequest, mapOf("error" to "Formato de produto inválido"))
+            call.respond(HttpStatusCode.NotFound, mapOf("error" to "Produto não encontrado"))
         }
-
-        val newCategoryId = if (body.containsKey("category_id")) {
-            body["category_id"]?.jsonPrimitive?.intOrNull
-                ?: return@put call.respond(HttpStatusCode.BadRequest, mapOf("error" to "category_id inválido"))
-        } else {
-            currentProduct.categoryId
-        }
-
-        val newPrice = if (body.containsKey("price")) {
-            body["price"]?.jsonPrimitive?.doubleOrNull
-                ?: return@put call.respond(HttpStatusCode.BadRequest, mapOf("error" to "price inválido"))
-        } else {
-            currentProduct.price
-        }
-
-        val newQuantity = if (body.containsKey("quantity")) {
-            body["quantity"]?.jsonPrimitive?.intOrNull
-                ?: return@put call.respond(HttpStatusCode.BadRequest, mapOf("error" to "quantity inválido"))
-        } else {
-            currentProduct.quantity
-        }
-
-        val newName = body["name"]?.jsonPrimitive?.contentOrNull ?: currentProduct.name
-        val newDescription = if (body.containsKey("description")) {
-            body["description"]?.jsonPrimitive?.contentOrNull
-        } else {
-            currentProduct.description
-        }
-
-        val updatedProduct = currentProduct.copy(
-            categoryId = newCategoryId,
-            name = newName,
-            description = newDescription,
-            price = newPrice,
-            quantity = newQuantity,
-        )
-
-        val savedProduct = repository.update(id, updatedProduct)
-        call.respond(HttpStatusCode.OK, savedProduct)
     }
 
     delete("/products/{id}") {

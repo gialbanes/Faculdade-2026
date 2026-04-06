@@ -41,7 +41,7 @@ fun Application.module() {
     val categoryRepository = ExposedCategoryRepository()
 
     routing {
-        get("/") { call.respondText("Ktor: ${Greeting().greet()}") }
+        get("/") { call.respondText("Serviço Ktor ativo.") }
         get("/health") { call.respondText("OK") }
 
         swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml")

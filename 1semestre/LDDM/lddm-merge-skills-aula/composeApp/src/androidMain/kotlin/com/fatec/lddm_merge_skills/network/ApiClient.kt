@@ -2,6 +2,7 @@ package com.fatec.lddm_merge_skills.network
 
 import com.fatec.lddm_merge_skills.BASE_URL
 import com.fatec.lddm_merge_skills.model.Course
+import com.fatec.lddm_merge_skills.model.Lesson
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.okhttp.*
@@ -11,6 +12,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.json.Json
+import com.fatec.lddm_merge_skills.model.Question
 
 object ApiClient {
 
@@ -33,6 +35,15 @@ object ApiClient {
     suspend fun getCourses(): List<Course> {
         return httpClient.get("$BASE_URL/courses").body()
     }
+
+    suspend fun getLessons(courseId: Int): List<Lesson> {
+        return httpClient.get("$BASE_URL/courses/$courseId/lessons").body()
+    }
+
+    suspend fun getQuestions(lessonId: Int): List<Question> {
+        return httpClient.get("$BASE_URL/lessons/${lessonId}Id/questions").body()
+    }
+
 
     /** POST /courses → Cria um novo curso */
     suspend fun createCourse(title: String, description: String?): Course {

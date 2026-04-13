@@ -27,15 +27,35 @@ import lddm_merge_skills.composeapp.generated.resources.Res
 private val Border = Color(0xFFE5E7EB)
 private val Muted = Color(0xFF6B7280)
 
+enum class Screen{ DASHBOARD, COURSES, ADD_COURSE}
+
 @Composable
 fun App() {
-    DashboardScreenPreview()
-    MaterialTheme {}
+    MaterialTheme {
+        // DashboardScrren()
+
+        var currentScreen by remember { mutableStateOf(Screen.DASHBOARD) }
+
+        when(currentScreen){
+            Screen.DASHBOARD -> DashboardScreen(
+                onNavigateToCourses = {currentScreen = Screen.COURSES},
+            )
+
+            Screen.COURSES -> CourseListScreen(
+                onBack = { currentScreen = Screen.DASHBOARD },
+                onAddCourse = { currentScreen = Screen.ADD_COURSE}
+            )
+            Screen.ADD_COURSE -> AddCourseScreen(
+                onBack = { currentScreen = Screen.COURSES },
+                onCourseCreated = { currentScreen = Screen.COURSES}
+
+            )
+        }
+    }
 }
 
 @Composable
-@Preview
-fun DashboardScreenPreview(){
+fun DashboardScreen(onNavigateToCourses: () -> Unit) {
     // Estados
     // parecido com o useState do JS
     var coursesCount by remember { mutableStateOf(0) }
@@ -104,6 +124,12 @@ fun DashboardScreenPreview(){
                     DashboardCard("Lições", lessonsCount.toString(), Modifier.weight(1f))
                     DashboardCard("Questões", questionsCount.toString(), Modifier.weight(1f))
                 }
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(
+                    onClick = onNavigateToCourses, modifier = Modifier.fillMaxSize(), colors = ButtonDefaults.buttonColors(containerColor = Color.Black)
+                ) {
+                    Text("Gerenciar cursos", color = Color.White)
+                }
             }
         }
     }
@@ -122,4 +148,10 @@ fun DashboardCard(title: String, value: String, modifier: Modifier = Modifier){
             Text(value, fontSize = 28.sp, fontWeight = FontWeight.Bold)
         }
     }
+}
+
+@Composable
+@Preview
+fun CourseListScreenPreview(){
+
 }

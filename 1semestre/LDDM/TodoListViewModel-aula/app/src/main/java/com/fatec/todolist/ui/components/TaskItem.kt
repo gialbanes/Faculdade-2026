@@ -1,3 +1,14 @@
+/*
+ * TaskItem.kt - Componente Visual Individual de Tarefa
+ * 
+ * Exibe um card com uma tarefa contendo:
+ * - Ícone de check animado (marca/desmarca como concluída)
+ * - Título da tarefa com estilos dinâmicos (riscado se concluída)
+ * - Cor de fundo animada (muda para roxo quando concluída)
+ * - Ícone de delete para remover a tarefa
+ * Utiliza Jetpack Compose e animações para feedback visual
+ */
+
 package com.fatec.todolist.ui.components
 
 import androidx.compose.animation.animateColorAsState

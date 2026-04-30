@@ -1,3 +1,12 @@
+/*
+ * TaskStats.kt - Componentes de Estatísticas da Lista de Tarefas
+ * 
+ * Este arquivo contém:
+ * - StatCard: Composable que exibe uma estatística individual com animação de transição
+ * - TaskStateRow: Composable que exibe três cards lado a lado (Total, Feitas, Pendentes)
+ * Utiliza Jetpack Compose e animações para visualizar o progresso das tarefas
+ */
+
 package com.fatec.todolist.ui.components
 
 import androidx.compose.animation.core.animateIntAsState

@@ -1,3 +1,12 @@
+/*
+ * TaskViewModel - Gerenciador de Estado da Lista de Tarefas
+ * 
+ * Este arquivo contém:
+ * - TaskUiState: data class que representa o estado da UI (lista de tarefas, texto de entrada e filtro ativo)
+ * - TaskViewModel: ViewModel que gerencia as operações de tarefas (adicionar, remover, marcar como concluída, filtrar)
+ *   Utiliza StateFlow para reatividade e atualização automática da UI
+ */
+
 package com.fatec.todolist.viewmodel
 
 import com.fatec.todolist.model.Task

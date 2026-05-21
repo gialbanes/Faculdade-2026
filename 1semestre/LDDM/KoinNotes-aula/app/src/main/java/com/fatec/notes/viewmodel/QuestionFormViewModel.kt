@@ -7,8 +7,6 @@ import com.fatec.notes.model.QuestionType
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-
-
 data class QuestionFormUiState(
     val questionText: String = "",
     val questionType: QuestionType = QuestionType.MULTIPLE_CHOICE,
@@ -118,6 +116,70 @@ class QuestionFormViewModel(
         _uiState.value = current.copy(
             options = current.options + ""
         )
+    }
+    // Remover alternativas - mínimo 2
+    fun removeOption(index: Int) {
+        val current = _uiState.value
+        if (!current.canRemoveOption) return
+        val updated = current.options.toMutableList()
+        if(index in updated.indices) {
+            updated.removeAt(index)
+
+            val newCorrectIndex = when {
+                current.correctOptionIndex == index -> -1
+                current.correctOptionIndex > index -> current.correctOptionIndex - 1
+                else -> current.correctOptionIndex
+            }
+
+            _uiState.value = current.copy(
+                options = updated,
+                correctOptionIndex = newCorrectIndex,
+                correctOrder = emptyList() // Reseta ordem ao remover
+            )
+        }
+    }
+
+    fun onCorrectOptionChange(index: Int) {
+        _uiState.value = _uiState.value.copy(correctOptionIndex = index)
+    }
+
+    fun onCorrectOrderChange(order: List<Int>) {
+        _uiState.value = _uiState.value.copy(correctOrder = order)
+    }
+
+    // Marca hasAttemptedSubmit = true
+    // Só salva se isFormValid = true
+    fun submitQuestion() {
+        val current = _uiState.value.copy(hasAttemptedSubmit = true)
+        _uiState.value = current
+
+        if (!current.isFormValid) return
+
+        // Sequencia digita (0,1,2,3,4)
+        val order = if (current.questionType == QuestionType.ORDERING) current.options.indices.toList() else emptyList()
+
+        val question = Question(
+            text = current.questionText.trim(),
+            type = current.questionType,
+            options = current.options.map { it.trim() },
+            correctIndex = current.correctOptionIndex,
+            correctOrder = order
+        )
+        repository.add(question)
+
+        _uiState.value = QuestionFormUiState(
+            savedQuestions = repository.getAll(),
+            showSuccess = true
+        )
+    }
+
+    fun dismissSuccess() {
+        _uiState.value = _uiState.value.copy(showSuccess = false)
+    }
+
+    fun removeQuestion(questionId: Long) {
+        repository.remove(questionId)
+        _uiState.value = _uiState.value.copy(savedQuestions = repository.getAll())
     }
 
 }

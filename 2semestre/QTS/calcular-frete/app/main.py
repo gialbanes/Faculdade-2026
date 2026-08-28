@@ -17,6 +17,7 @@ class FreteRequest(BaseModel):
     peso: float
     uf: str
 
+@lru_cache(maxsize=128)
 def calcular_frete(peso: float, uf: str) -> float:
     if peso < 0.1:
         raise ValueError("O peso mínimo do poduto é 0.1kg.")

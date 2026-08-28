@@ -192,3 +192,105 @@ class TestEficienciaCache:
         assert info.hits == 0
         assert info.misses == 0
         assert info.currsize == 0
+
+    # --- Novos testes de cache (RF-EFI-01) ---------------------------------
+
+    def test_currsize_cresce_com_entradas_unicas(self):
+        """currsize deve aumentar a cada combinação distinta armazenada."""
+        calcular_frete.cache_clear()
+        calcular_frete(peso=1.0, uf="SP")
+        assert _cache_info().currsize == 1
+
+        calcular_frete(peso=2.0, uf="SP")
+        assert _cache_info().currsize == 2
+
+        calcular_frete(peso=1.0, uf="RJ")
+        assert _cache_info().currsize == 3
+
+    def test_currsize_nao_cresce_em_cache_hit(self):
+        """Chamadas em hit não devem aumentar currsize (entrada já armazenada)."""
+        calcular_frete.cache_clear()
+        calcular_frete(peso=5.0, uf="SP")
+        tamanho_apos_miss = _cache_info().currsize
+
+        calcular_frete(peso=5.0, uf="SP")  # hit
+        calcular_frete(peso=5.0, uf="SP")  # hit
+        assert _cache_info().currsize == tamanho_apos_miss
+
+    def test_cache_chave_case_sensitive_na_uf(self):
+        """'sp' e 'SP' são entradas de cache distintas (chave é o argumento bruto)."""
+        calcular_frete.cache_clear()
+        calcular_frete(peso=5.0, uf="SP")
+        calcular_frete(peso=5.0, uf="sp")  # argumento diferente → novo miss
+        assert _cache_info().misses == 2, (
+            "'SP' e 'sp' devem gerar entradas separadas no cache."
+        )
+
+    def test_cache_chave_sensivel_a_variacao_minima_de_peso(self):
+        """Peso 5.0 e 5.1 são chaves distintas — devem gerar misses independentes."""
+        calcular_frete.cache_clear()
+        calcular_frete(peso=5.0, uf="GO")
+        calcular_frete(peso=5.1, uf="GO")
+        assert _cache_info().misses == 2
+
+    def test_apos_cache_clear_mesma_chamada_gera_novo_miss(self):
+        """Após cache_clear(), a mesma chamada que antes era hit gera um novo miss."""
+        calcular_frete.cache_clear()
+        calcular_frete(peso=8.0, uf="BA")  # miss
+        calcular_frete(peso=8.0, uf="BA")  # hit
+        assert _cache_info().hits == 1
+
+        calcular_frete.cache_clear()
+        calcular_frete(peso=8.0, uf="BA")  # deve ser miss novamente
+        info = _cache_info()
+        assert info.misses == 1
+        assert info.hits == 0
+
+    def test_cache_hit_nao_reinvoca_logica_interna(self):
+        """Em cache hit, a função subjacente não deve ser reexecutada."""
+        calcular_frete.cache_clear()
+
+        with patch("app.main.NORTE_UFS", wraps=None) as _:
+            # Primeiro chama sem patch para popular o cache
+            pass
+
+        calcular_frete(peso=3.0, uf="SC")  # miss — popula cache
+
+        # Substitui NORTE_UFS por um objeto que lança ao ser acessado
+        from app import main as app_main
+        original = app_main.NORTE_UFS
+        try:
+            app_main.NORTE_UFS = None  # cache hit não vai tocar nesse valor
+            resultado = calcular_frete(peso=3.0, uf="SC")  # deve ser hit
+        finally:
+            app_main.NORTE_UFS = original
+
+        # Se chegou aqui sem AttributeError/TypeError, confirmamos o hit
+        assert resultado == 20.0
+        assert _cache_info().hits >= 1
+
+    def test_cache_com_peso_no_limite_de_faixa(self):
+        """Peso 10.0 (limite da faixa base) deve ser cacheado corretamente."""
+        calcular_frete.cache_clear()
+        r1 = calcular_frete(peso=10.0, uf="SP")
+        r2 = calcular_frete(peso=10.0, uf="SP")
+        assert r1 == r2 == 20.0
+        assert _cache_info().hits == 1
+        assert _cache_info().misses == 1
+
+    def test_cache_com_peso_acima_do_limite_de_faixa(self):
+        """Peso 10.1 (acima do limite de faixa) deve ser cacheado com valor_base=50."""
+        calcular_frete.cache_clear()
+        r1 = calcular_frete(peso=10.1, uf="SP")
+        r2 = calcular_frete(peso=10.1, uf="SP")
+        assert r1 == r2 == 50.0
+        assert _cache_info().hits == 1
+        assert _cache_info().misses == 1
+
+    def test_cache_com_uf_norte_retorna_adicional_em_hit(self):
+        """Cache hit para UF da região Norte deve preservar o adicional de R$15."""
+        calcular_frete.cache_clear()
+        r1 = calcular_frete(peso=5.0, uf="AM")  # miss → 20 + 15 = 35
+        r2 = calcular_frete(peso=5.0, uf="AM")  # hit
+        assert r1 == r2 == 35.0
+        assert _cache_info().hits == 1

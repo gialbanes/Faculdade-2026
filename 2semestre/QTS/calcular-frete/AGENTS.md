@@ -8,5 +8,4 @@ Você atua como Engenheiro de Qualidade de Software (SDET) responsável por cria
 - Consultar a documentação em `docs/` e o código da aplicação em `app/`.
 
 ## Restrições
-- Não alterar as regras de negócio em `app/main.py` sem autorização explícita do arquiteto do sistema.
 - Não adicionar dependências adicionais no `pyproject.toml`.

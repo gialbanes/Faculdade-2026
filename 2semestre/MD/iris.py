@@ -1,6 +1,3 @@
-# Dataset Iris
-# Utilizado para demonstrar, passo a passo como um algoritmo de Machine Learning pode aprender padrões e classificar flores de 2 espécies 
-
 import pandas as pd
 import matplotlib.pyplot as plt 
 from sklearn.datasets import load_iris
@@ -9,6 +6,7 @@ from sklearn.tree import plot_tree
 
 # métricas utilizadas para avaliar o modelo 
 from sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay, classification_report
+from sklearn.model_selection import train_test_split
 
 # carregamento do dataset 
 iris = load_iris()
@@ -54,10 +52,10 @@ print('\nNome da espécie:', iris.target_names[codigo_especie])
 # transformando dados em tabelas 
 print('\n')
 print('='*70)
-print("Tranformação dos dados em tabela")
+print("Transformação dos dados em tabela")
 print('='*70)
 
-# criar um dataframe usando os dados do daraset 
+# criar um dataframe usando os dados do dataset 
 dados = pd.DataFrame(
     iris.data, 
     columns=[
@@ -68,16 +66,13 @@ dados = pd.DataFrame(
     ]
 )
 
-# adicionar a coluna 'especie' ao dataframe
-
-dados["codigo especie"] = iris.target
-dados["nome especie"] = dados["codigo especie"].map({
+# adicionar as colunas ao dataframe com nomes padronizados
+dados["codigo_especie"] = iris.target
+dados["nome_especie"] = dados["codigo_especie"].map({
     0: 'setosa',
     1: 'versicolor',
     2: 'virginica'
 })
-
-print(dados.head(10))
 
 # mostrar os primeiros registros 
 print('\nPrimeiros registros:')
@@ -90,7 +85,7 @@ print("Tamanho do dataset")
 print('='*70)
 
 print("\nQuantidade de linhas:", dados.shape[0])
-print("\nQuantidade de colunas:", dados.shape[1])
+print("Quantidade de colunas:", dados.shape[1])
 
 # quantidade de flores por espécie 
 print('\n')
@@ -98,7 +93,7 @@ print('='*70)
 print("Quantidade de flores por espécie")
 print('='*70)
 
-quantidade_especie = dados["Nome_Especie"].value_counts()
+quantidade_especie = dados["nome_especie"].value_counts()
 print("\nQuantidade de flores por espécie são: ")
 print(quantidade_especie)
 
@@ -109,4 +104,113 @@ plt.xlabel("Espécies")
 plt.ylabel("Quantidade de flores")
 plt.xticks(rotation=0)
 plt.tight_layout()
-plt.show
+plt.show()
+
+# estatística descritiva 
+print('\n')
+print('='*70)
+print("Estatística descritiva")
+print('='*70)
+
+print("\nA tabela abaixo irá mostrar valores da média, mínimo, máximo, desvio padrão e outras informações estatísticas\n")
+
+print(
+    dados[[
+        "codigo_especie",
+        "Comprimento_Sepala",
+        "Largura_Sepala",
+        "Comprimento_Petala",
+        "Largura_Petala"
+    ]].describe()
+)
+
+# média das medidas por espécie
+print('\n')
+print('='*70)
+print("Média das medidas por espécie")
+print('='*70)
+
+medias = dados.groupby("nome_especie")[[
+        "Comprimento_Sepala",
+        "Largura_Sepala",
+        "Comprimento_Petala",
+        "Largura_Petala"
+]].mean()
+
+print("\n")
+print(medias)
+
+# visualização dos dados
+print('\n')
+print('='*70)
+print("Visualização dos dados")
+print('='*70)
+
+print("\nMostrar gráfico se existem grupos diferentes por espécie")
+
+# percorrer cada espécie 
+for especie in dados["nome_especie"].unique():
+
+    # filtrar apenas registros da especie atual
+    dados_especie = dados[
+        dados["nome_especie"] == especie
+    ]
+
+    # adicionar os pontos do gráfico 
+    plt.scatter(
+        dados_especie["Comprimento_Petala"],
+        dados_especie["Largura_Petala"],
+        label=especie
+    )
+
+    # configuração do gráfico 
+    plt.title("Relação entre comprimento e largura")
+    plt.xlabel("Comprimento da pétala (cm)")
+    plt.ylabel("Largura da pétala (cm)")
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+# definindo variaveis X e Y 
+print("\n")
+print('='*70)
+print("Definindo entradas e respostas")
+print('='*70)
+
+# X contem as características utilizadas pelo algoritmo para realizar o aprendizado 
+x = dados[[
+    "Comprimento_Sepala",
+    "Largura_Sepala",
+    "Comprimento_Petala",
+    "Largura_Petala"
+]]
+
+# Y contem a resposta correta retornando a espécie da flor 
+y = dados["codigo_especie"]
+print("\nX representa os dados utilizados como ENTRADA")
+
+print(
+    "\nComprimento_Sepala", 
+    "\nLargura_Sepala",
+    "\nComprimento_Petala",
+    "\nLargura_Petala"
+)
+
+print("\nY representa a resposta que queremos prever")
+print("\n Y = espécie da flor")
+
+# separando treinamento e teste
+print("\n")
+print('='*70)
+print("Separando treinamento e teste")
+print('='*70)
+
+# iremos utilizar 70% dos dados para treinamento e 30% para testes 
+x_treino, x_teste, y_treino, y_teste = train_test_split(
+    x,
+    y,
+    test_size=0.30,
+    random_state=42,
+    stratify=y
+)
+

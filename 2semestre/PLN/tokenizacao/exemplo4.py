@@ -1,0 +1,8 @@
+import nltk
+
+texto="Paulo Freire disse que quando a educação não é libertadora, o sonho do oprimido é ser o opressor. Em tempos de minorias fazendo campanha para candidato que despreza seus direitos e necessidades, fica claro que nunca tivemos uma educação de fato libertadora. ;( #DiaDosProfessores #EducacaoLibertadora @PauloFreireOficial"
+
+# separação de palavras
+palavras = nltk.word_tokenize(texto)
+
+print(palavras)

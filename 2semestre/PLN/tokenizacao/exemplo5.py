@@ -1,0 +1,11 @@
+import nltk
+
+texto="Paulo Freire disse que quando a educação não é libertadora, o sonho do oprimido é ser o opressor. Em tempos de minorias fazendo campanha para candidato que despreza seus direitos e necessidades, fica claro que nunca tivemos uma educação de fato libertadora. ;( #DiaDosProfessores #EducacaoLibertadora @PauloFreireOficial"
+
+# separa palavras e símbolos de tweets, como hashtags e menções
+tokenizador = nltk.TweetTokenizer()
+
+# tokeniza o texto
+tweet = tokenizador.tokenize(texto)
+
+print(tweet)

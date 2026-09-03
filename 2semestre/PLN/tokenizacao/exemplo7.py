@@ -14,6 +14,7 @@ for texto in avaliacao:
 print(vocabulario)
 print(len(vocabulario))
 
+# método set remove os termos repetidos 
 vocabulario_sem_repetidas = set(vocabulario)
 print(vocabulario_sem_repetidas)
 print(len(vocabulario_sem_repetidas))

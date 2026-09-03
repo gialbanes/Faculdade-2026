@@ -25,23 +25,40 @@ avaliacao = [
 
 frases_tokenizadas = []
 palavras_tokenizadas = []
+vocabulario_sem_stop_words = []
 
+# tokenização de frases
 for texto in avaliacao:
     frases = nltk.sent_tokenize(texto)
     for frase in frases:
-        frases_tokenizadas.append(frases)
+        frases_tokenizadas.append(frase)
 
 print(frases_tokenizadas)
 print("Quantidade de frases tokenizadas: ", len(frases_tokenizadas))
 
+# tokenização de palavras
 for texto in avaliacao:
     palavras = nltk.word_tokenize(texto)
     for palavra in palavras:
-        palavras_tokenizadas.append(palavras)
+        palavras_tokenizadas.append(palavra)
 
 print(palavras_tokenizadas)
 print("Quantidade de palavras tokenizadas: ", len(palavras_tokenizadas))
 
-# Remover palavras repetidas
+# remover palavras repetidas
 vocabulario_sem_repeticao = set(palavras_tokenizadas)
 print("Quantidade de palavras únicas: ", len(vocabulario_sem_repeticao))
+
+# remover stop words
+stop_words = nltk.corpus.stopwords.words('portuguese')
+
+for palavra in palavras_tokenizadas:
+    if not(palavra in stop_words):
+        vocabulario_sem_stop_words.append(palavra)
+
+print("Palavras após remoção de stop words: ", vocabulario_sem_stop_words)
+print("Quantidade de stop words removidas: ", len(vocabulario_sem_stop_words))
+
+# diferença entre palavras com e sem stop words
+print("Quantidade de palavras com stop words: ", len(palavras_tokenizadas))
+print("Quantidade de palavras sem stop words: ", len(palavras_tokenizadas) - len(vocabulario_sem_stop_words))

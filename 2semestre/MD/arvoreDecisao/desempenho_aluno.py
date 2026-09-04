@@ -32,7 +32,7 @@ X_treino, X_teste, y_treino, y_teste = train_test_split(x, y, test_size=0.25, ra
 # treinamento: aprender com exemplos anteriores 
 # teste: verificar se o aprendizadofunciona em exemplos reservados 
 
-# pré processar usando apenas informações do treinamento - tratamento de infos ausentes 
+# pré processar usando apenas informações do treinamento - tratamento de infos ausentes
 medianas = X_treino.median()
 X_treino = X_treino. fillna(medianas)
 X_teste = X_teste.fillna(medianas)

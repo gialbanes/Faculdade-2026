@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Hub Solidário - Campanha Emergencial</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #f3f4f6;
+      margin: 0;
+      padding: 30px 20px;
+      color: #1f2937;
+    }
+    .card-campanha {
+      max-width: 500px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+    .imagem-capa {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+    }
+    .conteudo {
+      padding: 24px;
+    }
+    /* FALHA 1: Indicador de urgencia baseado exclusivamente em cor */
+    .status-badge {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background-color: #ef4444;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .status-container {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #4b5563;
+    }
+    h2 {
+      margin: 0 0 10px 0;
+      font-size: 20px;
+      color: #111827;
+    }
+    /* FALHA 2: Baixo contraste de cor (#9ca3af sobre #ffffff = 2.4 : 1) */
+    .descricao-campanha {
+      color: #9ca3af;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+    .meta-arrecadacao {
+      background-color: #f9fafb;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      /* FALHA 3: Texto de apoio com contraste insuficiente (#888888 sobre #f9fafb = 3.5 : 1) */
+      color: #888888;
+      font-size: 13px;
+    }
+    .campo-grupo {
+      margin-bottom: 16px;
+    }
+    .campo-grupo input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    /* FALHA 4: Remocao global do anel de foco visual */
+    *:focus {
+      outline: none;
+    }
+    /* FALHA 5: Botao criado com tag <div> em vez de elemento nativo <button> */
+    .btn-acao {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background-color: #2563eb;
+      color: #ffffff;
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      box-sizing: border-box;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card-campanha">
+    <!-- FALHA DE ACESSIBILIDADE: Imagem informativa sem atributo alt -->
+    <img class="imagem-capa" src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&q=80" />
+
+    <div class="conteudo">
+      <div class="status-container">
+        <span class="status-badge"></span> Nível de Prioridade da Campanha
+      </div>
+
+      <h2>Apoio Emergencial às Vítimas de Enchentes</h2>
+
+      <p class="descricao-campanha">
+        Arrecadação de cestas básicas, cobertores e água potável para distribuição nas comunidades atingidas.
+      </p>
+
+      <div class="meta-arrecadacao">
+        Meta: R$ 50.000,00 | Arrecadado: R$ 32.400,00 (64%)
+      </div>
+
+      <!-- FALHA DE ACESSIBILIDADE: Campo sem <label> associado e com tabindex positivo invertendo ordem -->
+      <div class="campo-grupo">
+        <input type="text" placeholder="Nome Completo do Doador" tabindex="2" />
+      </div>
+
+      <!-- FALHA DE ACESSIBILIDADE: Campo com tabindex=1 forçando foco antes do primeiro campo -->
+      <div class="campo-grupo">
+        <input type="email" placeholder="E-mail de Contato" tabindex="1" />
+      </div>
+
+      <!-- FALHA DE ACESSIBILIDADE: Div com clique mas sem role, foco ou acionamento por teclado -->
+      <div class="btn-acao" onclick="alert('Doação registrada com sucesso!')">
+        Confirmar Apoio à Campanha
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

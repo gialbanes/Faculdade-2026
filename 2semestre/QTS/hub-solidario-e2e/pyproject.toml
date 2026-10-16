@@ -1,0 +1,29 @@
+[project]
+name = "qts-auditoria-acessibilidade"
+version = "0.1.0"
+description = "Suíte de testes automatizados de usabilidade e acessibilidade com Playwright"
+requires-python = ">=3.12"
+dependencies = [
+    "pytest>=8.3.0",
+    "pytest-playwright>=0.5.0",
+    "axe-playwright-python>=0.1.5",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.0",
+    "playwright>=1.48.0",
+    "pytest-playwright>=0.5.2",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --headed"
+markers = [
+    "accessibility: Testes automatizados de conformidade WCAG com axe-core",
+    "keyboard: Testes de navegação e operabilidade exclusiva por teclado",
+]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --strict-markers"

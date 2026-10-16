@@ -214,3 +214,23 @@ x_treino, x_teste, y_treino, y_teste = train_test_split(
     stratify=y
 )
 
+print("\nTotal de Flores:", len(dados))
+
+print("\nFlores Utilizadas no treinamento:", len(x_treino))
+
+print("\nFlores Utilizadas no Teste", len(x_teste))
+
+#Criar a Arvore de Decisão
+print("\n")
+print("="*70)
+print("Separação para Treinamento e Teste")
+print("="*70)
+#Criar o modelo de Árvore de Decisão. max_depth=3 limita a árvore em 3 niveis. Isso irá facilitar a visualização e interpretação.
+
+modelo = DecisionTreeClassifier(
+    max_depth=3,
+    random_state=42
+)
+
+print("\nModelo Criado:")
+print(modelo)
